@@ -1,0 +1,46 @@
+#垂直拆分相关配置
+spring:
+  shardingsphere:
+    #========================配置数据库========================
+    datasource:
+      #数据库名称 一个或多个 多个数据库名字用逗号隔开 数据库名称可自定义
+      names: vertical-db-0,vertical-db-1,vertical-db-2,
+      #========================分库分表配置========================
+      vertical-db-0:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        type: com.alibaba.druid.pool.DruidDataSource
+        url: jdbc:mysql://localhost:3306/sharding_db?serverTimezone=GMT%2B8&characterEncoding=utf8
+        username: root
+        password: 123456
+      vertical-db-1:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        type: com.alibaba.druid.pool.DruidDataSource
+        url: jdbc:mysql://localhost:3306/sharding_db_1?serverTimezone=GMT%2B8&characterEncoding=utf8
+        username: root
+        password: 123456
+      vertical-db-2:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        type: com.alibaba.druid.pool.DruidDataSource
+        url: jdbc:mysql://localhost:3306/sharding_db_2?serverTimezone=GMT%2B8&characterEncoding=utf8
+        username: root
+        password: 123456
+    #========================控制台输出 SQL 语句========================
+    props:
+      sql:
+        show: true
+    #========================专库专表策略========================
+    sharding:
+      #配置公共表
+      broadcast-tables: dict
+      tables:
+        #表分配策略
+        category-table:
+          actual-data-nodes: vertical-db-$->{0}.category
+          #表策略
+          table-strategy:
+            inline:
+              #指定的列分片
+              sharding-column: cat_id
+              #指定分片规则
+              algorithm-expression: category
+
