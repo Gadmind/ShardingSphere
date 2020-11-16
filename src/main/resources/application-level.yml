@@ -1,0 +1,57 @@
+#水平拆分相关配置
+spring:
+  shardingsphere:
+    #========================配置数据库========================
+    datasource:
+      #数据库名称 一个或多个 多个数据库名字用逗号隔开 数据库名称可自定义
+      names: db1,db2,db3
+      #========================分库分表配置========================
+      db2:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        type: com.alibaba.druid.pool.DruidDataSource
+        url: jdbc:mysql://localhost:3306/sharding_db_1?serverTimezone=GMT%2B8&characterEncoding=utf-8
+        username: root
+        password: 123456
+      db3:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        type: com.alibaba.druid.pool.DruidDataSource
+        url: jdbc:mysql://localhost:3306/sharding_db_2?serverTimezone=GMT%2B8&characterEncoding=utf-8
+        username: root
+        password: 123456
+      #========================单库分表配置========================
+      db1:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        type: com.alibaba.druid.pool.DruidDataSource
+        url: jdbc:mysql://localhost:3306/sharding_db?serverTimezone=GMT%2B8&characterEncoding=utf-8
+        username: root
+        password: 123456
+    #========================控制台输出 SQL 语句========================
+    props:
+      sql:
+        show: true
+    #========================表分片策略========================
+    sharding:
+      tables:
+        #有两个数据库 db2 db3；两个表 product_table_1 product_table_2
+        product:
+          actual-data-nodes: db$->{2..3}.product_table_$->{1..2}
+          #表分片策略
+          table-strategy:
+            inline:
+              #指定的列分片
+              sharding-column: id
+              #指定分片规则
+              algorithm-expression: product_table_$->{id%2+1}
+          #库分片策略
+          database-strategy:
+            inline:
+              #指定库分片的列
+              sharding-column: cat_id
+              #指定分片规则
+              algorithm-expression: db$->{cat_id%2+2}
+#        productTable:
+#          actual-data-nodes: db1.product_table_$->{1..2}
+#          table-strategy:
+#            inline:
+#              sharding-column: id
+#              algorithm-expression: product_table_$->{id%2+1}
