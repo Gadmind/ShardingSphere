@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.daop.shardingsphere.mapper.DictMapper">
+    <resultMap id="BaseResultMap" type="com.daop.shardingsphere.entity.Dict">
+        <!--TableFieldsMappingList-->
+        <id column="dict_id" jdbcType="BIGINT" property="dictId"/>
+        <result column="dict_code" jdbcType="VARCHAR" property="dictCode"/>
+        <result column="dict_value" jdbcType="VARCHAR" property="dictValue"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--TableFieldsList-->
+       
+    </sql>
+</mapper>
