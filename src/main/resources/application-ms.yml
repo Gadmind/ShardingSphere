@@ -1,0 +1,34 @@
+#数据库主从操作
+spring:
+  shardingsphere:
+    datasource:
+      names: master-db,slave-db
+      #主数据库配置
+      master-db:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        type: com.alibaba.druid.pool.DruidDataSource
+        url: jdbc:mysql://localhost:3307/sharding_master_slave?serverTimezone=GMT%2B8&characterEncoding=utf8
+        username: db_sync
+        password: db_sync
+      #从数据库配置
+      slave-db:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        type: com.alibaba.druid.pool.DruidDataSource
+        url: jdbc:mysql://localhost:3308/sharding_master_slave?serverTimezone=GMT%2B8&characterEncoding=utf8
+        username: db_sync
+        password: db_sync
+    sharding:
+      master-slave-rules:
+        #读写分离命名
+        master-slaves-db:
+          #主服务器数据源
+          master-data-source-name: master-db
+          #从服务器数据源
+          slave-data-source-names: slave-db
+      tables:
+        category:
+          actual-data-nodes: master-slaves-db.category
+    #控制台输出 SQL 语句
+    props:
+      sql:
+        show: true
